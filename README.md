@@ -29,9 +29,17 @@ npx create-next-app -e https://github.com/nextui-org/next-app-template
 You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
 
 ```bash
-npm install
+npm install -g nextui-cli
+nextui init nextui-engage
+npm install @nextui-org/react
+npm install @nextui-org/react framer-motion
+npm install xlsx
 ```
+### Add NextUI components
 
+```bash
+nextui add card image divider
+```
 ### Run the development server
 
 ```bash
