@@ -11,6 +11,8 @@ import {
   Divider,
   Link,
   Checkbox,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
 import * as XLSX from "xlsx";
 
@@ -21,6 +23,7 @@ export default function Home() {
   const [selections, setSelections] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [search, setSearch] = useState("");
+  const [patternDesc, setPatternDesc] = useState([]);
 
   useEffect(() => {
     async function loadExcel() {
@@ -33,8 +36,26 @@ export default function Home() {
         const workbook = XLSX.read(dataBuffer, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
+        console.log("Excel Data:", jsonData); // Debugging log
 
         setData(jsonData);
+        // Create unique patterns for Autocomplete
+        const patterns = Array.from(
+          new Map(
+            jsonData.map((row, index) => [
+              row.Tool?.toLowerCase() || `unknown-${index}`, // Use a unique key based on Tool
+              {
+                key: `${index}`, // Generate unique key
+                label: row.Tool || "Unknown Tool", // Use Tool as label
+                description: row.Tool || "Unknown Tool", // Use Tool directly
+              },
+            ])
+          ).values()
+        );
+        
+
+        console.log("Patterns:", patterns); // Debugging log
+        setPatternDesc(patterns);
 
         const prompts = [
           { column: "Environment", question: "Select your environment:", image: "/images/environment.png" },
@@ -51,6 +72,33 @@ export default function Home() {
 
     loadExcel();
   }, []);
+
+  const handleSearch = (value) => {
+    setSearch(value);
+
+    if (value.trim() === "") {
+      setFilteredData([]); // Clear filtered data
+      return;
+    }
+
+    const results = patternDesc.filter((pattern) =>
+      pattern.label.toLowerCase().includes(value.toLowerCase())
+    );
+
+
+    setFilteredData(results); // Debounced update
+  };
+
+  const selectSearchResult = (selected) => {
+    const result = patternDesc.find((item) => item.key === selected);
+    if (result) {
+      // Update state in an effect to decouple from render
+      setTimeout(() => {
+        setSearch(result.label); // Update search input
+        setFilteredData([result]); // Show the selected result
+      }, 0);
+    }
+  };
 
   const getOptionImage = (option) => {
     if (!option) return "/images/default.png";
@@ -97,7 +145,7 @@ export default function Home() {
     setStep(0);
     setSelections({});
     setFilteredData(data);
-    setSearch(""); // Reset search
+    setSearch(""); // Reset search 
   };
 
   if (!data.length) {
@@ -111,6 +159,20 @@ export default function Home() {
 
   return (
     <div style={{ textAlign: "center", padding: "5px", marginTop: "0px" }}>
+      {/* Search Bar */}
+      <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+      <Autocomplete
+          className="max-w-xs"
+          label="Search Patterns"
+          placeholder="Search by platform..."
+          value={search}
+          onSearchChange={handleSearch}
+        >
+          {patternDesc.map((pattern) => (
+            <AutocompleteItem key={pattern.key}>{pattern.label}</AutocompleteItem>
+          ))}
+        </Autocomplete>
+      </div>       
       <div style={{ textAlign: "left", marginTop: "0px", marginBottom: "10px" }}>
         <a
           href="#"
@@ -127,7 +189,7 @@ export default function Home() {
           Start Over
         </a>
       </div>
-
+      {/* Progress Bar */}
       <div style={{ marginBottom: "20px", textAlign: "center" }}>
         <div
           style={{
@@ -183,6 +245,7 @@ export default function Home() {
             minHeight: "10vh",
           }}
         >
+          {/* Question selection UI */}
           <Card
             style={{
               maxWidth: "500px",
