@@ -16,12 +16,15 @@ This is a template for creating applications using Next.js 14 (app directory) an
 
 ## How to Use
 
-### Use the template with create-next-app
+### Install Node.js
 
-To create a new project based on this template using `create-next-app`, run the following command:
+Download and install Node.js at https://nodejs.org/en (LTS version recommended).
+
+Verify installation:
 
 ```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
+node --version
+npm --version
 ```
 
 ### Install dependencies
@@ -30,16 +33,10 @@ You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
 
 ```bash
 npm install -g nextui-cli
-nextui init nextui-engage
-npm install @nextui-org/react
 npm install @nextui-org/react framer-motion
-npm install xlsx
+npm install xlsx js-cookie
 ```
-### Add NextUI components
 
-```bash
-nextui add card image divider
-```
 ### Run the development server
 
 ```bash
