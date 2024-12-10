@@ -27,11 +27,18 @@ node --version
 npm --version
 ```
 
+### Clone the repository
+
+```bash
+git clone https://github.com/wallylee99/nextui-engage.git
+```
+
 ### Install dependencies
 
 You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
 
 ```bash
+cd nextui-engage
 npm install -g nextui-cli
 npm install @nextui-org/react framer-motion
 npm install xlsx js-cookie
@@ -41,6 +48,12 @@ npm install xlsx js-cookie
 
 ```bash
 npm run dev
+```
+
+### Open the local engagement page
+
+```bash
+http://localhost:3000
 ```
 
 ### Setup pnpm (optional)
